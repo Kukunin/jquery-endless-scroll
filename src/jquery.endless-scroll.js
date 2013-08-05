@@ -63,7 +63,7 @@
 			this.options = obj.options;
 			obj.ajaxModule = this;
 		},
-		loadPage: function(url, placement) {
+		loadPage: function(url, placement, callback) {
 			//The hash with methods list
 			//depends from placement
 			var actions = {
@@ -79,14 +79,10 @@
 				action = actions[placement];
 
 			//Make AJAX query
-			$.get(url, null, $.proxy(function (data) {
-			var containerSelector = this.options.container,
+			$.get(url, null, $.proxy(function (_data) {
+				var data = $("<div>").html(_data),
+				containerSelector = this.options.container,
 				container = $(containerSelector, data).first();
-
-				if ( !container.length ) {
-					// if the element is a root element, try to filter it
-					container = $(data).filter(containerSelector).first();
-				}
 
 				if ( container.length ) {
 					//Find the cursor
@@ -94,7 +90,58 @@
 					//Find and insert entities
 					container.find(this.options.entity)[action.inject](cursor);
 				}
+
+				if ( $.isFunction(callback) ) {
+					callback(data);
+				}
 			}, this), 'html');
+		}
+	}
+
+	var navigationModule = {
+		init: function(options, obj) {
+			obj.options = $.extend({
+				nextPage: ".pagination a[rel=next]",
+				previousPage: ".pagination a[rel=previous]"
+			}, options);
+
+			this.options = obj.options;
+
+			$.each([{
+				selector: this.options.nextPage,
+				event: "jes:bottomThreshold.navigation",
+				placement: 'bottom'
+			}, {
+				selector: this.options.previousPage,
+				event: "jes:topThreshold.navigation",
+				placement: 'top'
+			}], $.proxy(function(i, v) {
+				v.element = $(v.selector);
+				if ( v.element.length ) {
+					var url = v.element.prop("href"),
+					lock = false;
+					v.element.remove();
+
+					$(this.options.container).on(v.event, function() {
+						//this object is container
+						if ( lock || !url ) return;
+
+						lock = true;
+						obj.ajaxModule.loadPage(url, v.placement, $.proxy(function( data ) {
+							//Search new next link
+							var newElement = $(v.selector, $(data));
+							if ( newElement.length ) {
+								//Update URL and remove lock
+								lock = false;
+								url = newElement.prop("href");
+							} else {
+								//Remove event at all
+								$(this).off(v.event);
+							}
+						}, this));
+					});
+				}
+			},this));
 		}
 	}
 
@@ -104,7 +151,7 @@
 		this.options = $.extend(true, {
 			container: "#container",
 			entity: ".entity",
-			_modules: [ scrollModule, ajaxModule ],
+			_modules: [ scrollModule, ajaxModule, navigationModule ],
 			modules: []
 		}, options);
 
