@@ -4,6 +4,12 @@
  */
 (function($) {
 
+	// Is pushState supported by this browser?
+	$.support.pushState =
+		window.history && window.history.pushState && window.history.replaceState &&
+		// pushState isn't reliable on iOS until 5.
+		!navigator.userAgent.match(/((iPod|iPhone|iPad).+\bOS\s+[1-4]|WebApps\/.+CFNetwork)/)
+
 	//Declaration of modules
 	var scrollModule = {
 		init: function(options, obj) {
@@ -178,13 +184,25 @@
 		}
 	}
 
+	var pushStateHistory = {
+		init: function(options, obj) {
+			if ( !$.support.pushState ) {
+				return;
+			}
+
+			obj.container.on("jes:beforePageLoad", function(event, url, placement) {
+				history.replaceState({}, null, url);
+			});
+		}
+	}
+
 	$.endlessScroll = function(options) {
 
 		//Initialize modules
 		this.options = $.extend(true, {
 			container: "#container",
 			entity: ".entity",
-			_modules: [ scrollModule, ajaxModule, navigationModule ],
+			_modules: [ scrollModule, ajaxModule, navigationModule, pushStateHistory ],
 			modules: []
 		}, options);
 
