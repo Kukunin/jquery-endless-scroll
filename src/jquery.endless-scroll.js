@@ -55,13 +55,56 @@
 		}
 	}
 
+	var ajaxModule = {
+		init: function(options, obj) {
+			obj.options = $.extend({
+			}, options);
+
+			this.options = obj.options;
+			obj.ajaxModule = this;
+		},
+		loadPage: function(url, placement) {
+			//The hash with methods list
+			//depends from placement
+			var actions = {
+					top: {
+						find: 'first',
+						inject: 'insertBefore'
+					},
+					bottom: {
+						find: 'last',
+						inject: 'insertAfter'
+					}
+				},
+				action = actions[placement];
+
+			//Make AJAX query
+			$.get(url, null, $.proxy(function (data) {
+			var containerSelector = this.options.container,
+				container = $(containerSelector, data).first();
+
+				if ( !container.length ) {
+					// if the element is a root element, try to filter it
+					container = $(data).filter(containerSelector).first();
+				}
+
+				if ( container.length ) {
+					//Find the cursor
+					var cursor = $(this.options.entity, containerSelector)[action.find]();
+					//Find and insert entities
+					container.find(this.options.entity)[action.inject](cursor);
+				}
+			}, this), 'html');
+		}
+	}
+
 	$.fn.endlessScroll = function(options) {
 
 		//Initialize modules
 		this.options = $.extend(true, {
 			container: "#container",
 			entity: ".entity",
-			_modules: [ scrollModule ],
+			_modules: [ scrollModule, ajaxModule ],
 			modules: []
 		}, options);
 
