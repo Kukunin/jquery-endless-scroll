@@ -8,7 +8,25 @@
 	var scrollModule = {
 		init: function(options, obj) {
 			obj.options = $.extend({
+				scrollContainer: window,
+				scrollPadding: 100,
+				scrollEventDelay: 300
 			}, options);
+
+			$(obj.options.scrollContainer).on("scroll.jes", $.proxy(function() {
+				this.throttle(this.scrollHandler, obj.options.scrollEventDelay);
+			}, this));
+		},
+		throttle: function(method, delay) {
+			if ( method._tId ) { return; }
+
+			method();
+			//Clean up mark
+			method._tId= setTimeout(function(){
+				method._tId = null;
+			}, delay);
+		},
+		scrollHandler: function() {
 		}
 	}
 
