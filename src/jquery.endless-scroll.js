@@ -28,12 +28,26 @@
 			this.scrollContainer = $(this.options.scrollContainer);
 
 			this.updateEntities();
-			this.container.on("jes:afterPageLoad", $.proxy(this.updateEntities, this));
+			this.sortMarkers();
+
+			this.currentPage = null;
+
+			this.container.on("jes:afterPageLoad", $.proxy(function() {
+				this.updateEntities();
+				this.sortMarkers();
+			}, this));
 
 			this.bind();
 		},
 		updateEntities: function() {
 			this.entities = $(this.options.entity, this.container);
+		},
+		sortMarkers: function() {
+			var markers = [];
+			$(".jes-marker", this.container).each(function() {
+				markers.push({ top: $(this).position().top, url: $(this).data("jesUrl") });
+			});
+			this.markers = markers;
 		},
 		bind: function() {
 			this.scrollContainer.on("scroll.jes", $.proxy(function(event) {
@@ -85,6 +99,22 @@
 				}
 			} else {
 				this._bottomlock = false;
+			}
+
+
+			//Check, whether user scrolled to another page
+			var newPage = this.markers[0];
+			//Determine, what is current page
+			for ( var i = 1; i < this.markers.length; i++ ) {
+				if ( scrollTop > this.markers[i].top ) {
+					newPage = this.markers[i];
+				} else {
+					break;
+				}
+			}
+			if ( newPage.url != this.currentPage ) {
+				this.currentPage = newPage.url;
+				$(this.container).trigger("jes:scrollToPage", newPage.url);
 			}
 		}
 	}
@@ -199,7 +229,7 @@
 				return;
 			}
 
-			obj.container.on("jes:beforePageLoad", function(event, url, placement) {
+			obj.container.on("jes:scrollToPage", function(event, url) {
 				history.replaceState({}, null, url);
 			});
 		}
@@ -211,7 +241,7 @@
 		this.options = $.extend(true, {
 			container: "#container",
 			entity: ".entity",
-			_modules: [ scrollModule, ajaxModule, navigationModule, pushStateHistory ],
+			_modules: [ ajaxModule, scrollModule, navigationModule, pushStateHistory ],
 			modules: []
 		}, options);
 
