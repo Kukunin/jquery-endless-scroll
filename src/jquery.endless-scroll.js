@@ -15,6 +15,8 @@
 			this.options = obj.options;
 			obj.scrollModule = this;
 
+			this._toplock = true;
+			this._bottomlock = true;
 			this.bind();
 		},
 		bind: function() {
@@ -47,10 +49,26 @@
 				bottomEntityPosition = $lastEntity.outerHeight() + $lastEntity.position().top,
 				bottomTarget = bottomEntityPosition - this.options.scrollPadding;
 
+			//Don't trigger event again, if already fired
+			//Visitor have to leave the area and get back to fire event again
+			//Process top threshold
+			if ( scrollTop < topTarget ) {
+				if ( !this._toplock ) {
+					$(this.options.container).trigger("jes:topThreshold");
+					this._toplock = true;
+				}
+			} else {
+				this._toplock = false;
+			}
+
+			//Process bottom threshold
 			if ( scrollBottom > bottomTarget ) {
-				$(this.options.container).trigger("jes:bottomThreshold");
-			} else if ( scrollTop < topTarget ) {
-				$(this.options.container).trigger("jes:topThreshold");
+				if ( !this._bottomlock ) {
+					$(this.options.container).trigger("jes:bottomThreshold");
+					this._bottomlock = true;
+				}
+			} else {
+				this._bottomlock = false;
 			}
 		}
 	}
