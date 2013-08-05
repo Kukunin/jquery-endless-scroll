@@ -13,14 +13,17 @@
 				scrollEventDelay: 300
 			}, options);
 			this.options = obj.options;
+			this.container = obj.container;
 			obj.scrollModule = this;
 
 			this._toplock = true;
 			this._bottomlock = true;
+
+			this.scrollContainer = $(this.options.scrollContainer);
 			this.bind();
 		},
 		bind: function() {
-			$(this.options.scrollContainer).on("scroll.jes", $.proxy(function(event) {
+			this.scrollContainer.on("scroll.jes", $.proxy(function(event) {
 				if ( this._tId ) { return; }
 
 				this.scrollHandler(event);
@@ -35,8 +38,8 @@
 			$(this.options.scrollContainer).off("scroll.jes");
 		},
 		scrollHandler: function(ev) {
-			var $scrollable = $(ev.currentTarget),
-				$entities = $(this.options.entity, this.options.container),
+			var $scrollable = this.scrollContainer,
+				$entities = $(this.options.entity, this.container),
 				$firstEntity = $entities.first(),
 				$lastEntity = $entities.last();
 
@@ -54,7 +57,7 @@
 			//Process top threshold
 			if ( scrollTop < topTarget ) {
 				if ( !this._toplock ) {
-					$(this.options.container).trigger("jes:topThreshold");
+					$(this.container).trigger("jes:topThreshold");
 					this._toplock = true;
 				}
 			} else {
@@ -64,7 +67,7 @@
 			//Process bottom threshold
 			if ( scrollBottom > bottomTarget ) {
 				if ( !this._bottomlock ) {
-					$(this.options.container).trigger("jes:bottomThreshold");
+					$(this.container).trigger("jes:bottomThreshold");
 					this._bottomlock = true;
 				}
 			} else {
@@ -124,6 +127,7 @@
 			}, options);
 
 			this.options = obj.options;
+			this.container = obj.container;
 
 			$.each([{
 				selector: this.options.nextPage,
@@ -140,7 +144,7 @@
 					lock = false;
 					v.element.remove();
 
-					$(this.options.container).on(v.event, function() {
+					$(this.container).on(v.event, function() {
 						//this object is container
 						if ( lock || !url ) return;
 
@@ -172,6 +176,12 @@
 			_modules: [ scrollModule, ajaxModule, navigationModule ],
 			modules: []
 		}, options);
+
+		this.container = $(this.options.container);
+		if ( !this.container.length ) {
+			throw "Container for endless scroll isn't available on the page";
+			return;
+		}
 
 
 		//Merge custom options with default
