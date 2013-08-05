@@ -3,6 +3,7 @@
  * See: https://github.com/Kukunin/jquery-endless-scroll
  */
 (function($) {
+	'use strict';
 
 	// Is pushState supported by this browser?
 	$.support.pushState =
