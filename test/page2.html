@@ -1,0 +1,52 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+	<title>Test for Endless Scroll plugin - Page 2</title>
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js" charset="utf-8"></script>
+	<script src="../src/jquery.endless-scroll.js" type="text/javascript" charset="utf-8"></script>
+	<script type="text/javascript" charset="utf-8">
+	$(function() {
+		window.m = $("body").endlessScroll({
+			scrollPadding: 200,
+			container: "#container",
+			entity: ".entity",
+			nextPage: ".next-page",
+			previousPage: ".prev-page"
+		});
+	});
+	</script>
+	<style>
+		#container .entity {
+			line-height:10em;
+			background:#eee;
+			margin:2em 0;
+			padding-left:2em;
+		}
+	</style>
+</head>
+<body>
+<a href="index.html" class="prev-page">Prev page</a>
+<div id="container">
+	<div class="entity">page 2 entity</div>
+	<div class="entity">page 2 entity</div>
+	<div class="entity">page 2 entity</div>
+	<div class="entity">page 2 entity</div>
+	<div class="entity">page 2 entity</div>
+	<div class="entity">page 2 entity</div>
+	<div class="entity">page 2 entity</div>
+	<div class="entity">page 2 entity</div>
+	<div class="entity">page 2 entity</div>
+	<div class="entity">page 2 entity</div>
+	<div class="entity">page 2 entity</div>
+	<div class="entity">page 2 entity</div>
+	<div class="entity">page 2 entity</div>
+	<div class="entity">page 2 entity</div>
+	<div class="entity">page 2 entity</div>
+	<div class="entity">page 2 entity</div>
+	<div class="entity">page 2 entity</div>
+</div>
+<a href="page3.html" class="next-page">Next page</a>
+</body>
+</html>
