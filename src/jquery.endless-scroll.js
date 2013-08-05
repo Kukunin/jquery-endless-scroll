@@ -82,6 +82,7 @@
 			}, options);
 
 			this.options = obj.options;
+			this.container = obj.container;
 			obj.ajaxModule = this;
 		},
 		loadPage: function(url, placement, callback) {
@@ -99,6 +100,8 @@
 				},
 				action = actions[placement];
 
+			this.container.trigger("jes:beforePageLoad", url, placement);
+
 			//Make AJAX query
 			$.get(url, null, $.proxy(function (_data) {
 				var data = $("<div>").html(_data),
@@ -115,6 +118,7 @@
 				if ( $.isFunction(callback) ) {
 					callback(data);
 				}
+				this.container.trigger("jes:afterPageLoad", url, placement, data);
 			}, this), 'html');
 		}
 	}
