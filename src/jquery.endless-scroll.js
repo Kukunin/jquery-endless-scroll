@@ -12,6 +12,7 @@
 				scrollPadding: 100,
 				scrollEventDelay: 300
 			}, options);
+			this.options = obj.options;
 
 			$(obj.options.scrollContainer).on("scroll.jes", $.proxy(function(event) {
 				if ( this._tId ) { return; }
@@ -25,6 +26,19 @@
 			}, this));
 		},
 		scrollHandler: function(ev) {
+			var $scrollable = $(ev.currentTarget),
+				$lastEntity = $(this.options.entity, this.options.container).last();
+
+			var scrollTop = $scrollable.scrollTop(),
+				height = $scrollable.height(),
+				totalScroll = scrollTop + height;
+
+			var bottomEntityPosition = $lastEntity.outerHeight() + $lastEntity.position().top,
+				bottomTarget = bottomEntityPosition - this.options.scrollPadding;
+
+			if ( totalScroll > bottomTarget ) {
+				$(this.options.container).trigger("jes:bottomThreshold");
+			}
 		}
 	}
 
