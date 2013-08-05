@@ -13,17 +13,24 @@
 				scrollEventDelay: 300
 			}, options);
 			this.options = obj.options;
+			obj.scrollModule = this;
 
-			$(obj.options.scrollContainer).on("scroll.jes", $.proxy(function(event) {
+			this.bind();
+		},
+		bind: function() {
+			$(this.options.scrollContainer).on("scroll.jes", $.proxy(function(event) {
 				if ( this._tId ) { return; }
 
 				this.scrollHandler(event);
 				//Clean up mark
 				this._tId= setTimeout($.proxy(function(){
 					this._tId = null;
-				},this), obj.options.scrollEventDelay);
+				},this), this.options.scrollEventDelay);
 
 			}, this));
+		},
+		unbind: function() {
+			$(this.options.scrollContainer).off("scroll.jes");
 		},
 		scrollHandler: function(ev) {
 			var $scrollable = $(ev.currentTarget),
