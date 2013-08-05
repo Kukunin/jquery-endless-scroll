@@ -27,17 +27,23 @@
 		},
 		scrollHandler: function(ev) {
 			var $scrollable = $(ev.currentTarget),
-				$lastEntity = $(this.options.entity, this.options.container).last();
+				$entities = $(this.options.entity, this.options.container),
+				$firstEntity = $entities.first(),
+				$lastEntity = $entities.last();
 
 			var scrollTop = $scrollable.scrollTop(),
 				height = $scrollable.height(),
-				totalScroll = scrollTop + height;
+				scrollBottom = scrollTop + height;
 
-			var bottomEntityPosition = $lastEntity.outerHeight() + $lastEntity.position().top,
+			var topEntityPosition = $firstEntity.position().top,
+				topTarget = topEntityPosition + this.options.scrollPadding,
+				bottomEntityPosition = $lastEntity.outerHeight() + $lastEntity.position().top,
 				bottomTarget = bottomEntityPosition - this.options.scrollPadding;
 
-			if ( totalScroll > bottomTarget ) {
+			if ( scrollBottom > bottomTarget ) {
 				$(this.options.container).trigger("jes:bottomThreshold");
+			} else if ( scrollTop < topTarget ) {
+				$(this.options.container).trigger("jes:topThreshold");
 			}
 		}
 	}
