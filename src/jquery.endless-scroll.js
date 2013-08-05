@@ -16,7 +16,8 @@
 
 		//Initialize modules
 		this.options = $.extend(true, {
-			scrollContainer: window,
+			container: "#container",
+			entity: ".entity",
 			_modules: [ scrollModule ],
 			modules: []
 		}, options);
