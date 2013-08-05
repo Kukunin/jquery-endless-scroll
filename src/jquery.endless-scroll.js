@@ -163,7 +163,7 @@
 		}
 	}
 
-	$.fn.endlessScroll = function(options) {
+	$.endlessScroll = function(options) {
 
 		//Initialize modules
 		this.options = $.extend(true, {
