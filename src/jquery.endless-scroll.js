@@ -20,7 +20,14 @@
 			this._bottomlock = true;
 
 			this.scrollContainer = $(this.options.scrollContainer);
+
+			this.updateEntities();
+			this.container.on("jes:afterPageLoad", $.proxy(this.updateEntities, this));
+
 			this.bind();
+		},
+		updateEntities: function() {
+			this.entities = $(this.options.entity, this.container);
 		},
 		bind: function() {
 			this.scrollContainer.on("scroll.jes", $.proxy(function(event) {
@@ -39,7 +46,7 @@
 		},
 		scrollHandler: function(ev) {
 			var $scrollable = this.scrollContainer,
-				$entities = $(this.options.entity, this.container),
+				$entities = this.entities,
 				$firstEntity = $entities.first(),
 				$lastEntity = $entities.last();
 
