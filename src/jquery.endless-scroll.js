@@ -96,6 +96,10 @@
 
 			this.options = obj.options;
 			this.container = obj.container;
+
+			//markers
+			this.setMarker($(this.options.entity, this.container).first(), location.href);
+
 			obj.ajaxModule = this;
 		},
 		loadPage: function(url, placement, callback) {
@@ -123,9 +127,11 @@
 
 				if ( container.length ) {
 					//Find the cursor
-					var cursor = $(this.options.entity, containerSelector)[action.find]();
+					var cursor = $(this.options.entity, containerSelector)[action.find](),
+						entities = container.find(this.options.entity);
 					//Find and insert entities
-					container.find(this.options.entity)[action.inject](cursor);
+					entities[action.inject](cursor);
+					this.setMarker(entities.first(), url);
 				}
 
 				if ( $.isFunction(callback) ) {
@@ -133,6 +139,9 @@
 				}
 				this.container.trigger("jes:afterPageLoad", url, placement, data);
 			}, this), 'html');
+		},
+		setMarker: function(entity, url) {
+			entity.addClass("jes-marker").data("jesUrl", url);
 		}
 	}
 
