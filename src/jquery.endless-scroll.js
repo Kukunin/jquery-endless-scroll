@@ -148,7 +148,7 @@
 				},
 				action = actions[placement];
 
-			this.container.trigger("jes:beforePageLoad", url, placement);
+			this.container.trigger("jes:beforePageLoad", [url, placement]);
 
 			//Make AJAX query
 			$.get(url, null, $.proxy(function (_data) {
@@ -168,7 +168,7 @@
 				if ( $.isFunction(callback) ) {
 					callback(data);
 				}
-				this.container.trigger("jes:afterPageLoad", url, placement, data);
+				this.container.trigger("jes:afterPageLoad", [url, placement, data]);
 			}, this), 'html');
 		},
 		setMarker: function(entity, url) {
