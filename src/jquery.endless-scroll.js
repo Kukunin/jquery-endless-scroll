@@ -203,9 +203,8 @@
 				if ( v.element.length ) {
 					var url = v.element.prop("href"),
 					lock = false;
-					v.element.remove();
 
-					$(this.container).on(v.event, function() {
+					var handler = function() {
 						//this object is container
 						if ( lock || !url ) return;
 
@@ -217,12 +216,20 @@
 								//Update URL and remove lock
 								lock = false;
 								url = newElement.prop("href");
+								v.element.attr("href", url);
 							} else {
 								//Remove event at all
 								$(this).off(v.event);
+								v.element.remove();
 							}
 						}, this));
-					});
+					};
+
+					$(this.container).on(v.event, handler);
+					$(v.element).on("click", $.proxy(function(ev) {
+						ev.preventDefault();
+						handler.apply(this.container)
+					}, this));
 				}
 			},this));
 		}
