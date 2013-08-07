@@ -36,6 +36,7 @@
 			this.container.on("jes:afterPageLoad", $.proxy(function() {
 				this.updateEntities();
 				this.sortMarkers();
+				this.checkMarker();
 			}, this));
 
 			this.bind();
@@ -49,6 +50,23 @@
 				markers.push({ top: $(this).position().top, url: $(this).data("jesUrl") });
 			});
 			this.markers = markers;
+		},
+		//Check, whether user scrolled to another page
+		checkMarker: function() {
+			var newPage = this.markers[0],
+				scrollTop = this.scrollContainer.scrollTop();
+			//Determine, what is current page
+			for ( var i = 1; i < this.markers.length; i++ ) {
+				if ( scrollTop > this.markers[i].top ) {
+					newPage = this.markers[i];
+				} else {
+					break;
+				}
+			}
+			if ( newPage.url != this.currentPage ) {
+				this.currentPage = newPage.url;
+				$(this.container).trigger("jes:scrollToPage", newPage.url);
+			}
 		},
 		bind: function() {
 			this.scrollContainer.on("scroll.jes", $.proxy(function(event) {
@@ -102,21 +120,7 @@
 				this._bottomlock = false;
 			}
 
-
-			//Check, whether user scrolled to another page
-			var newPage = this.markers[0];
-			//Determine, what is current page
-			for ( var i = 1; i < this.markers.length; i++ ) {
-				if ( scrollTop > this.markers[i].top ) {
-					newPage = this.markers[i];
-				} else {
-					break;
-				}
-			}
-			if ( newPage.url != this.currentPage ) {
-				this.currentPage = newPage.url;
-				$(this.container).trigger("jes:scrollToPage", newPage.url);
-			}
+			this.checkMarker();
 		}
 	}
 
