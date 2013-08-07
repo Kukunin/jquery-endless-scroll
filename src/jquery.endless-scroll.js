@@ -33,10 +33,18 @@
 
 			this.currentPage = null;
 
-			this.container.on("jes:afterPageLoad", $.proxy(function() {
+			this.container.on("jes:afterPageLoad", $.proxy(function(event, url, placement) {
 				this.updateEntities();
 				this.sortMarkers();
 				this.checkMarker();
+
+				if ( placement == "top" ) {
+					//Get offset between first and second pages
+					var offset = this.markers[1].top,
+						scrollTop = this.scrollContainer.scrollTop();
+
+					this.scrollContainer.scrollTop(scrollTop + offset);
+				}
 			}, this));
 
 			this.bind();
