@@ -168,7 +168,7 @@
 				if ( $.isFunction(callback) ) {
 					callback(data);
 				}
-				this.container.trigger("jes:afterPageLoad", [url, placement, data]);
+				this.container.trigger("jes:afterPageLoad", [url, placement, data, entities]);
 			}, this), 'html');
 		},
 		setMarker: function(entity, url) {
