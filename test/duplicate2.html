@@ -1,0 +1,44 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+	<title>Duplicate Test for Endless Scroll plugin - Page 2</title>
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js" charset="utf-8"></script>
+	<script src="../src/jquery.endless-scroll.js" type="text/javascript" charset="utf-8"></script>
+	<script type="text/javascript" charset="utf-8">
+	$(function() {
+		window.m = $.endlessScroll({
+			scrollPadding: 200,
+			container: "#container",
+			entity: ".entity",
+			nextPage: ".next-page",
+			previousPage: ".prev-page"
+		});
+	});
+	</script>
+	<style>
+		#container .entity {
+			line-height:10em;
+			background:#eee;
+			margin:2em 0;
+			padding-left:2em;
+		}
+	</style>
+</head>
+<body>
+<a href="duplicate.html" class="prev-page">Prev page</a>
+<div id="container">
+	<div class="entity" id="e8">entity 8</div>
+	<div class="entity" id="e9">entity 9</div>
+	<div class="entity" id="e10">entity 10</div>
+	<div class="entity" id="e11">entity 11</div>
+	<div class="entity" id="e12">entity 12</div>
+	<div class="entity" id="e13">entity 13</div>
+	<div class="entity" id="e14">entity 14</div>
+	<div class="entity" id="e15">entity 15</div>
+	<div class="entity" id="e16">entity 16</div>
+	<div class="entity" id="e17">entity 17</div>
+</div>
+</body>
+</html>

@@ -171,8 +171,14 @@
 				if ( container.length ) {
 					//Find the cursor
 					var cursor = $(this.options.entity, containerSelector)[action.find](),
-						entities = container.find(this.options.entity);
-					//Find and insert entities
+						entities = container.find(this.options.entity).filter(function(i) {
+							var id = $(this).attr("id");
+							if ( id ) {
+								return !($('#' + id, this.container).length)
+							}
+							return true;
+						});
+					//Insert entities
 					entities[action.inject](cursor);
 					this.setMarker(entities.first(), url);
 				}
