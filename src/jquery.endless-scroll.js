@@ -169,16 +169,23 @@
 				container = $(containerSelector, data).first();
 
 				if ( container.length ) {
-					//Find the cursor
-					var cursor = $(this.options.entity, containerSelector)[action.find](),
-						entities = container.find(this.options.entity).filter(function(i) {
+					//Find entities
+					var entities = container.find(this.options.entity);
+
+					if ( placement == "bottom" ) {
+						//Remove duplicated (staled) entities from page
+						entities.each(function(i) {
 							var id = $(this).attr("id");
 							if ( id ) {
-								return !($('#' + id, this.container).length)
+								$('#' + id, this.container).remove();
 							}
-							return true;
 						});
-					//Insert entities
+					}
+
+					//Find the cursor
+					var cursor = $(this.options.entity, containerSelector)[action.find]();
+
+					//Find and insert entities
 					entities[action.inject](cursor);
 					this.setMarker(entities.first(), url);
 				}
